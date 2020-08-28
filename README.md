@@ -30,3 +30,9 @@ Implementing a sample NodeJS Backend for 2FA authentication.
 
 
 #### TOTP - RFC 6238 - Time Based One-Time Password Algorithm
+
+
+
+#### References
+
+- [How does the Google Authenticator Work? HOTP TOTP Difference | 2FA Authentication](https://www.youtube.com/watch?v=XYVrnZK5MAU "Gabriel Zimmermann video explain how it basic work")
