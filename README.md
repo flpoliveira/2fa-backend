@@ -2,7 +2,7 @@
 
 Implementing a sample NodeJS Backend for 2FA authentication.
 
-#### HTOP - RFC 4226 - HMAC-Based One-Time Password Algorithm
+#### [HTOP - RFC 4226 - HMAC-Based One-Time Password Algorithm](https://tools.ietf.org/html/rfc4226 "RFC 4226")
 
 
 <img src="/img/OneTimePassword.png">
@@ -35,4 +35,4 @@ Implementing a sample NodeJS Backend for 2FA authentication.
 
 #### References
 
-- [How does the Google Authenticator Work? HOTP TOTP Difference | 2FA Authentication](https://www.youtube.com/watch?v=XYVrnZK5MAU "Gabriel Zimmermann video explain how it basic work")
+- [How does the Google Authenticator Work? HOTP TOTP Difference | 2FA Authentication](https://www.youtube.com/watch?v=XYVrnZK5MAU "Gabriel Zimmermann's video explain how it basic work")
