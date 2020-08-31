@@ -40,9 +40,10 @@ Implementing a sample NodeJS Backend for 2FA authentication.
 - [Issue at otplib that i need to checkout](https://github.com/yeojz/otplib/issues/362)
 
 #### Google input for 2FA code
-<code>
+
+```html
 <input type="text" pattern="[0-9]{6}" class="whsOnd zHQkBf" jsname="YPqjbf" autocomplete="off" tabindex="0" aria-label="Digite o código" maxlength="6" autofocus="" data-initial-value="020090" badinput="false" dir="ltr">
-</code>
+```
 
 #### Otpauth QRCode Google
 <code>
