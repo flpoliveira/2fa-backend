@@ -29,10 +29,22 @@ Implementing a sample NodeJS Backend for 2FA authentication.
 
 
 
-#### TOTP - RFC 6238 - Time Based One-Time Password Algorithm
+#### [TOTP - RFC 6238 - Time Based One-Time Password Algorithm](https://tools.ietf.org/html/rfc6238 "RFC 6238")
 
 
 
 #### References
 
 - [How does the Google Authenticator Work? HOTP TOTP Difference | 2FA Authentication](https://www.youtube.com/watch?v=XYVrnZK5MAU "Gabriel Zimmermann's video explain how it basic work")
+- [HOTP vs TOTP: What's the Difference](https://www.microcosm.com/blog/hotp-totp-what-is-the-difference)
+- [Issue at otplib that i need to checkout](https://github.com/yeojz/otplib/issues/362)
+
+#### Google input for 2FA code
+<code>
+<input type="text" pattern="[0-9]{6}" class="whsOnd zHQkBf" jsname="YPqjbf" autocomplete="off" tabindex="0" aria-label="Digite o código" maxlength="6" autofocus="" data-initial-value="020090" badinput="false" dir="ltr">
+</code>
+
+#### Otpauth QRCode Google
+<code>
+otpauth://totp/Google%3Aemail%40gmail.com?secret=NotBase32Secret&issuer=Google
+</code>
