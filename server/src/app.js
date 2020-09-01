@@ -2,7 +2,9 @@ const express = require('express');
 const { setTwoFactor, getToken, verifyToken } = require('./otp');
 
 const app = express();
+const cors = require('cors');
 
+app.use(cors());
 app.use(express.json());
 
 app.post("/settwofactor", (request, response) => {
@@ -32,6 +34,7 @@ app.post("/gettoken", (request, response) => {
 app.post("/verifytoken", (request, response) => {
     const {name, email, password, type, token} = request.body;
 
+    console.log(request.body);
     const isValid = verifyToken(name, email, password, type, token);
 
     if (isValid) {
