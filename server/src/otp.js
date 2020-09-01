@@ -1,7 +1,8 @@
 const otplib = require("otplib");
 const database = require("../database.json");
 const fs = require("fs");
-const { encode } = require("punycode");
+
+const stepsForSms = 300;
 
 module.exports = {
     
@@ -25,8 +26,7 @@ module.exports = {
             return null;
         } else {
             const encodedSecret = otplib.authenticator.generateSecret();
-            database[index].secret = encodedSecret;
-            database[index].counter_hotp = 0;
+            database[index].totp_secret = encodedSecret;
         }
 
         fs.writeFileSync(
@@ -35,7 +35,7 @@ module.exports = {
         );
         const user = email;
         const service = "TagoIO2FA"
-        return otplib.authenticator.keyuri(user, service, database[index].secret);
+        return otplib.authenticator.keyuri(user, service, database[index].totp_secret);
     },
     getToken(name, email, password, type) {
         const index = database.findIndex((element, index, array) => {
@@ -53,17 +53,21 @@ module.exports = {
 
         switch (type) {
             case "app":
-                const token = otplib.totp.generate(database[index].secret);
-                console.log("app", database[index].secret, token);
+                otplib.authenticator.resetOptions();
+                const token = otplib.authenticator.generate(database[index].totp_secret);
                 return token;
 
             default:
-                database[index].counter_hotp++;
+                otplib.authenticator.options = {
+                    step: stepsForSms,
+                }
+                const encodedSecret = otplib.authenticator.generateSecret();
+                database[index].hotp_secret = encodedSecret;
                 fs.writeFileSync(
                     "./database.json",
                     JSON.stringify(database)
                 );
-                return otplib.hotp.generate(database[index].secret, database[index].counter_hotp);
+                return otplib.authenticator.generate(database[index].hotp_secret);
         }
     },
     verifyToken(name, email, password, type, token) {
@@ -80,36 +84,46 @@ module.exports = {
             return null;
         }
         let isValid = false;
-        switch (type) {
+        switch(type) {
             case "app":
-                const secret = otplib.authenticator.decode(database[index].secret);
                 try {
-                    isValid = otplib.authenticator.check(database[index].secret, token);
-                    console.log(otplib.authenticator.generate(secret));
-                    console.log(secret, token);
+                    otplib.authenticator.resetOptions();
+                    isValid = otplib.authenticator.verify({
+                        token,
+                        secret: database[index].totp_secret
+                    });
                 } catch(err) {
                     console.log(err);
                 }
-                
-                return isValid;
-
+                break;
             default:
-                isValid = otplib.hotp.check(
-                    token, 
-                    database[index].secret, 
-                    database[index].counter_hotp
-                );
-
-                if (isValid) {
-                    database[index].counter_hotp++;
-
-                    fs.writeFileSync(
-                        "./database.json",
-                        JSON.stringify(database)
-                    );
+                otplib.authenticator.options = {
+                    step: stepsForSms,
                 }
-                return isValid;
+                try {
+                    
+                    isValid = otplib.authenticator.verify({
+                        token,
+                        secret: database[index].hotp_secret
+                    });
+                    if(isValid) {
+                        const encodedSecret = otplib.authenticator.generateSecret();
+                        database[index].hotp_secret = encodedSecret;
+
+                        fs.writeFileSync(
+                            "./database.json",
+                            JSON.stringify(database)
+                        );
+                    }
+                    console.log(otplib.authenticator.generate(database[index].hotp_secret));
+                } catch(err) {
+                    console.log(err);
+                }
+                break;
         }
+       
+        
+        return isValid;
 
     }
     
