@@ -6,11 +6,10 @@ const stepsForSms = 300;
 
 module.exports = {
     
-    setTwoFactor(name, email, password) {
+    setTwoFactor(email, password) {
         const index = database.findIndex((element, index, array) => {
             if (
                 element.email === email
-                // && x.name === name
                 // && x.password === password
             ) {
                 return true;
@@ -37,7 +36,7 @@ module.exports = {
         const service = "TagoIO2FA"
         return otplib.authenticator.keyuri(user, service, database[index].totp_secret);
     },
-    getToken(name, email, password, type) {
+    getToken( email, password, type) {
         const index = database.findIndex((element, index, array) => {
             if (
                 element.email === email
@@ -70,7 +69,23 @@ module.exports = {
                 return otplib.authenticator.generate(database[index].hotp_secret);
         }
     },
-    verifyToken(name, email, password, type, token) {
+    hasToken(email, password) {
+        const index = database.findIndex((element, index, array) => {
+            if (
+                element.email === email
+                // && element.password === password
+            ) {
+                return true;
+            }
+            return false;
+        });
+        console.log(index);
+        if (index === -1) {
+            return false;
+        }
+        return true;
+    },
+    verifyToken( email, password, type, token) {
         const index = database.findIndex((element, index, array) => {
             if (
                 element.email === email

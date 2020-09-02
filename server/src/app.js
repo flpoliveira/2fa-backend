@@ -1,5 +1,5 @@
 const express = require('express');
-const { setTwoFactor, getToken, verifyToken } = require('./otp');
+const { setTwoFactor, getToken, verifyToken, hasToken } = require('./otp');
 
 const app = express();
 const cors = require('cors');
@@ -8,9 +8,9 @@ app.use(cors());
 app.use(express.json());
 
 app.post("/settwofactor", (request, response) => {
-    const {name, email, password} = request.body;
+    const {email, password} = request.body;
 
-    const otpauth = setTwoFactor(name, email, password);
+    const otpauth = setTwoFactor(email, password);
 
     if (otpauth) {
         response.status(200).send({success: otpauth});
@@ -20,9 +20,9 @@ app.post("/settwofactor", (request, response) => {
 });
 
 app.post("/gettoken", (request, response) => {
-    const {name, email, password, type} = request.body;
+    const {email, password, type} = request.body;
 
-    const token = getToken(name, email, password, type);
+    const token = getToken(email, password, type);
 
     if (token) {
         response.status(200).send({ token });
@@ -32,15 +32,27 @@ app.post("/gettoken", (request, response) => {
 });
 
 app.post("/verifytoken", (request, response) => {
-    const {name, email, password, type, token} = request.body;
+    const {email, password, type, token} = request.body;
 
     console.log(request.body);
-    const isValid = verifyToken(name, email, password, type, token);
+    const isValid = verifyToken(email, password, type, token);
 
     if (isValid) {
         response.status(200).send({ success: "it worked!" });
     } else {
-        response.status(400).send({error: "didnt worked!"});
+        console.log("error");
+        response.status(400).send({ error: "it didnt work!"});
+    }
+});
+
+app.post("/hastoken", (request, response) => {
+    const {email, password} = request.body;
+    console.log(request.body);
+
+    if (hasToken(email, password)) {
+        response.status(200).send({success: "This user has a token"});
+    } else {
+        response.status(400).send({error: "This user dont have a token"});
     }
 });
 
